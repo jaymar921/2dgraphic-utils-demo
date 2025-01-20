@@ -190,7 +190,7 @@ function App() {
           display={showPickupItemModal.display}
         />
       )}
-      <h1 className="text-center font-bold text-white text-2xl pt-2">
+      <h1 className="z-[-99999] text-center font-bold text-white text-2xl pt-2">
         Basic 2D Canvas Screen
       </h1>
       <p className="text-sm text-center text-yellow-400">
@@ -198,10 +198,10 @@ function App() {
       </p>
       <canvas
         id="my-canvas"
-        className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
+        className="z-[1] absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
       ></canvas>
 
-      <footer className="absolute bottom-1 text-center w-screen text-slate-400 text-md font-semibold">
+      <footer className="z-[-99999] absolute bottom-1 text-center w-screen text-slate-400 text-md font-semibold">
         Created by{" "}
         <a href="https://jayharronabejar.vercel.app" target="_blank">
           JayMar921
