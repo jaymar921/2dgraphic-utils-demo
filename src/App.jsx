@@ -29,6 +29,7 @@ function App() {
     const w = window.innerWidth;
     const h = window.innerHeight;
     const screen = new CanvasScreen("my-canvas", w, h, "rgba(0,0,0,0)");
+    screen.enableScreenDrag(true);
 
     const direction = {
       x: w / 2 - (156 / 2) * 0.5,
@@ -113,6 +114,12 @@ function App() {
     async function alterMovement() {
       while (true) {
         await sleep(20);
+
+        if (CanvasScreen.screenMoving) {
+          direction.x = player.posX;
+          direction.y = player.posY;
+          continue;
+        }
 
         // move player based on updated direction
         if (player.posX < direction.x) {
