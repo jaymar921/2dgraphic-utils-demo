@@ -1,4 +1,4 @@
-import { Sprite } from "@jaymar921/2dgraphic-utils/utility/Sprite";
+import { Sprite } from "../@jaymar921/2dgraphic-utils/utility/Sprite";
 
 /**
  * 
