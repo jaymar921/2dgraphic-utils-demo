@@ -3,12 +3,13 @@ import "./App.css";
 import AnimImage from "./assets/idle.png";
 import BootsImage from "./assets/boots.png";
 import GoldCoinImage from "./assets/coin.png";
-import QMarkImage from "./assets/qmark-icon.png";
+import QMark from "./assets/qmark-icon.png";
 import ItemPlopSFX from "./assets/item_plop.mp3";
+import CodeImage from "./assets/code.png";
 import { CanvasScreen, Sprite } from "./@jaymar921/2dgraphic-utils";
 import { SpriteType } from "./@jaymar921/2dgraphic-utils/utility/SpriteType";
 import { Player } from "./objects/Player";
-import { IsColide } from "./objects/HitboxUtil";
+import { IsCollide } from "./objects/HitboxUtil";
 import Modal from "./components/Modal";
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
       posY: direction.y - (116 / 2) * 0.5,
       imageSource: AnimImage,
       frames: 11,
+      frameBuffer: 4,
       scale: 0.5,
       type: SpriteType.PLAYER,
       velocity: 1,
@@ -62,6 +64,16 @@ function App() {
       name: "Boots of speed",
       posX: direction.x - 100,
       posY: direction.y - 100,
+      imageSource: BootsImage,
+      scale: 1,
+      type: SpriteType.ITEM,
+    });
+
+    const bootsItem2 = new Sprite({
+      objID: "bootsItem3",
+      name: "Boots of speed",
+      posX: direction.x + 30,
+      posY: direction.y + 60,
       imageSource: BootsImage,
       scale: 1,
       type: SpriteType.ITEM,
@@ -89,19 +101,31 @@ function App() {
 
     const qmark = new Sprite({
       objID: "qm-1",
-      name: "Source Code",
-      posX: direction.x + 110,
-      posY: direction.y - 180,
-      imageSource: QMarkImage,
-      scale: 0.05,
+      name: "JayMar's portfolio",
+      posX: direction.x + 50,
+      posY: direction.y - 278,
+      imageSource: QMark,
+      scale: 0.06,
+      type: SpriteType.ITEM,
+    });
+
+    const code = new Sprite({
+      objID: "c-1",
+      name: "Documentation",
+      posX: direction.x - 20,
+      posY: direction.y - 280,
+      imageSource: CodeImage,
+      scale: 0.07,
       type: SpriteType.ITEM,
     });
 
     screen.registerObject(bootsItem);
     screen.registerObject(bootsItem1);
+    screen.registerObject(bootsItem2);
     screen.registerObject(coin1);
     screen.registerObject(coin2);
     screen.registerObject(qmark);
+    screen.registerObject(code);
     screen.registerObject(player);
 
     screen.handleScreenClickedEvent((e) => {
@@ -139,7 +163,7 @@ function App() {
         for (const obj of screen.canvasObjects) {
           if (obj.type !== SpriteType.ITEM) continue;
 
-          if (IsColide(player, obj)) {
+          if (IsCollide(player, obj)) {
             // show pop up
             nearItem = obj;
             break;
@@ -158,7 +182,7 @@ function App() {
     }
 
     setTimeout(alterMovement, 100);
-  }, []);
+  }, [canvasScreen]);
 
   function pickupItem() {
     if (showPickupItemModal.objID) {
@@ -168,8 +192,13 @@ function App() {
         player.frameBuffer -= 1;
       }
 
-      if (showPickupItemModal.display === "Source Code") {
+      if (showPickupItemModal.display === "Documentation") {
         window.location.href = "https://github.com/jaymar921/2dgraphic-utils";
+        return;
+      }
+
+      if (showPickupItemModal.display === "JayMar's portfolio") {
+        window.location.href = "https://jayharronabejar.vercel.app";
         return;
       }
 
@@ -193,8 +222,11 @@ function App() {
       <h1 className="z-[-99999] text-center font-bold text-white text-2xl pt-2">
         Basic 2D Canvas Screen
       </h1>
-      <p className="text-sm text-center text-yellow-400">
+      <p className="z-[-99999] text-sm text-center text-yellow-400">
         Tap anywhere on screen to move the character
+      </p>
+      <p className="z-[-99999] text-sm text-center text-yellow-400">
+        Hold and drag to move the canvas camera
       </p>
       <canvas
         id="my-canvas"
