@@ -1,4 +1,4 @@
-import { Sprite } from "../@jaymar921/2dgraphic-utils/utility/Sprite";
+import { Sprite } from "@jaymar921/2dgraphic-utils";
 
 /**
  * Checks if sprite1 collides at the middle of sprite2.

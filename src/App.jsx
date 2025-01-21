@@ -6,8 +6,7 @@ import GoldCoinImage from "./assets/coin.png";
 import QMark from "./assets/qmark-icon.png";
 import ItemPlopSFX from "./assets/item_plop.mp3";
 import CodeImage from "./assets/code.png";
-import { CanvasScreen, Sprite } from "./@jaymar921/2dgraphic-utils";
-import { SpriteType } from "./@jaymar921/2dgraphic-utils/utility/SpriteType";
+import { CanvasScreen, Sprite, SpriteType } from "@jaymar921/2dgraphic-utils";
 import { Player } from "./objects/Player";
 import { IsCollide } from "./objects/HitboxUtil";
 import Modal from "./components/Modal";
@@ -103,7 +102,7 @@ function App() {
       objID: "qm-1",
       name: "JayMar's portfolio",
       posX: direction.x + 50,
-      posY: direction.y - 278,
+      posY: direction.y - 218,
       imageSource: QMark,
       scale: 0.06,
       type: SpriteType.ITEM,
@@ -113,7 +112,7 @@ function App() {
       objID: "c-1",
       name: "Documentation",
       posX: direction.x - 20,
-      posY: direction.y - 280,
+      posY: direction.y - 220,
       imageSource: CodeImage,
       scale: 0.07,
       type: SpriteType.ITEM,
