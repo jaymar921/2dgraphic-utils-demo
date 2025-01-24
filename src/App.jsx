@@ -102,20 +102,20 @@ function App() {
       objID: "qm-1",
       name: "JayMar's portfolio",
       posX: direction.x + 50,
-      posY: direction.y - 218,
+      posY: window.innerHeight - 78,
       imageSource: QMark,
       scale: 0.06,
-      type: SpriteType.ITEM,
+      type: SpriteType.STATIC,
     });
 
     const code = new Sprite({
       objID: "c-1",
       name: "Documentation",
       posX: direction.x - 20,
-      posY: direction.y - 220,
+      posY: window.innerHeight - 80,
       imageSource: CodeImage,
       scale: 0.07,
-      type: SpriteType.ITEM,
+      type: SpriteType.STATIC,
     });
 
     screen.registerObject(bootsItem);
@@ -159,10 +159,13 @@ function App() {
         }
 
         let nearItem = null;
-        for (const obj of screen.canvasObjects) {
-          if (obj.type !== SpriteType.ITEM) continue;
+        for (const obj of screen.getAllRegisteredObjects()) {
+          if (obj.type !== SpriteType.ITEM && obj.type !== SpriteType.STATIC)
+            continue;
 
-          if (IsCollide(player, obj)) {
+          const cameraOffset = screen.getCameraOffset();
+
+          if (IsCollide(player, obj, cameraOffset)) {
             // show pop up
             nearItem = obj;
             break;
