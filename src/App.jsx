@@ -5,6 +5,7 @@ import BootsImage from "./assets/boots.png";
 import GoldCoinImage from "./assets/coin.png";
 import QMark from "./assets/qmark-icon.png";
 import ItemPlopSFX from "./assets/item_plop.mp3";
+import BarrelImage from "./assets/barrel.png";
 import CodeImage from "./assets/code.png";
 import { CanvasScreen, Sprite, SpriteType } from "@jaymar921/2dgraphic-utils";
 import { Player } from "./objects/Player";
@@ -98,6 +99,16 @@ function App() {
       type: SpriteType.ITEM,
     });
 
+    const coin3 = new Sprite({
+      objID: "gc-3",
+      name: "Gold Coins",
+      posX: direction.x + 120,
+      posY: direction.y - 240,
+      imageSource: GoldCoinImage,
+      scale: 1,
+      type: SpriteType.ITEM,
+    });
+
     const qmark = new Sprite({
       objID: "qm-1",
       name: "JayMar's portfolio",
@@ -118,13 +129,25 @@ function App() {
       type: SpriteType.STATIC,
     });
 
+    const barrel = new Sprite({
+      objID: "b-1",
+      name: "Barrel",
+      posX: direction.x + 220,
+      posY: direction.y - 120,
+      imageSource: BarrelImage,
+      scale: 0.05,
+      type: SpriteType.OBJECT,
+    });
+
     screen.registerObject(bootsItem);
     screen.registerObject(bootsItem1);
     screen.registerObject(bootsItem2);
     screen.registerObject(coin1);
     screen.registerObject(coin2);
+    screen.registerObject(coin3);
     screen.registerObject(qmark);
     screen.registerObject(code);
+    screen.registerObject(barrel);
     screen.registerObject(player);
 
     screen.handleScreenClickedEvent((e) => {
@@ -144,33 +167,62 @@ function App() {
           continue;
         }
 
-        // move player based on updated direction
-        if (player.posX < direction.x) {
-          player.posX += player.velocity;
-        }
-        if (player.posX > direction.x) {
-          player.posX -= player.velocity;
-        }
-        if (player.posY > direction.y) {
-          player.posY -= player.velocity;
-        }
-        if (player.posY < direction.y) {
-          player.posY += player.velocity;
-        }
+        let velocityX = player.velocity;
+        let velocityY = player.velocity;
 
         let nearItem = null;
+        let collided = false;
         for (const obj of screen.getAllRegisteredObjects()) {
-          if (obj.type !== SpriteType.ITEM && obj.type !== SpriteType.STATIC)
+          if (
+            obj.type !== SpriteType.ITEM &&
+            obj.type !== SpriteType.STATIC &&
+            obj.type !== SpriteType.OBJECT
+          )
             continue;
 
           const cameraOffset = screen.getCameraOffset();
+          const collision = IsCollide(player, obj, cameraOffset);
 
-          if (IsCollide(player, obj, cameraOffset)) {
+          let collisionX = collision[1];
+          let collisionY = collision[2];
+
+          if (collision[0]) {
             // show pop up
             nearItem = obj;
+            if (obj.type === SpriteType.OBJECT) {
+              if (collisionX) {
+                velocityX = -player.velocity;
+                collided = true;
+              }
+              if (collisionY) {
+                velocityY = -player.velocity;
+                collided = true;
+              }
+            }
             break;
           }
         }
+
+        // move player based on updated direction
+        if (player.posX < direction.x) {
+          player.posX += velocityX;
+        }
+        if (player.posX > direction.x) {
+          player.posX -= velocityX;
+        }
+        if (player.posY > direction.y) {
+          player.posY -= velocityY;
+        }
+        if (player.posY < direction.y) {
+          player.posY += velocityY;
+        }
+
+        if (collided) {
+          direction.x = player.posX;
+          direction.y = player.posY;
+          nearItem = null;
+        }
+
         if (nearItem) {
           setShowPickupItemModal({
             show: true,
