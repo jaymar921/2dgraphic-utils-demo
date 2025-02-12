@@ -14,6 +14,7 @@ import Modal from "./components/Modal";
 
 function App() {
   const [canvasScreen, setCanvasScreen] = useState(null);
+  const [globalScale, setGlobalScale] = useState(1);
   const [showPickupItemModal, setShowPickupItemModal] = useState({
     show: false,
     display: "",
@@ -24,6 +25,10 @@ function App() {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  function handleZoom(e) {
+    setGlobalScale(e.globalScale);
+  }
+
   useEffect(() => {
     if (canvasScreen) return;
     // bind the CanvasScreen to the canvas element
@@ -31,6 +36,9 @@ function App() {
     const h = window.innerHeight;
     const screen = new CanvasScreen("my-canvas", w, h, "rgba(0,0,0,0)");
     screen.enableScreenDrag(true);
+    screen.enableScreenZoom(true);
+
+    screen.handleScreenZoomEvent(handleZoom);
 
     const direction = {
       x: w / 2 - (156 / 2) * 0.5,
@@ -151,8 +159,14 @@ function App() {
     screen.registerObject(player);
 
     screen.handleScreenClickedEvent((e) => {
-      direction.x = e.mousePosition.x - (player.width / 2) * player.scale;
-      direction.y = e.mousePosition.y - (player.height / 2) * player.scale;
+      direction.x =
+        (e.mousePosition.x -
+          (player.width / 2) * player.scale * screen.globalScale) /
+        screen.globalScale;
+      direction.y =
+        (e.mousePosition.y -
+          (player.height / 2) * player.scale * screen.globalScale) /
+        screen.globalScale;
     });
 
     setCanvasScreen(screen);
@@ -273,13 +287,13 @@ function App() {
           display={showPickupItemModal.display}
         />
       )}
-      <h1 className="z-[-99999] text-center font-bold text-white text-2xl pt-2">
+      <h1 className="z-[-99999] text-center font-bold text-white text-2xl pt-2 select-none">
         Basic 2D Canvas Screen
       </h1>
-      <p className="z-[-99999] text-sm text-center text-yellow-400">
+      <p className="z-[-99999] text-sm text-center text-yellow-400 select-none">
         Tap anywhere on screen to move the character
       </p>
-      <p className="z-[-99999] text-sm text-center text-yellow-400">
+      <p className="z-[-99999] text-sm text-center text-yellow-400 select-none">
         Hold and drag to move the canvas camera
       </p>
       <canvas
