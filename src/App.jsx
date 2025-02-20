@@ -7,7 +7,7 @@ import QMark from "./assets/qmark-icon.png";
 import ItemPlopSFX from "./assets/item_plop.mp3";
 import BarrelImage from "./assets/barrel.png";
 import CodeImage from "./assets/code.png";
-import { CanvasScreen, Sprite, SpriteType } from "@jaymar921/2dgraphic-utils";
+import { CanvasScreen, Sprite, SpriteType } from "./@jaymar921/2dgraphic-utils";
 import { Player } from "./objects/Player";
 import { IsCollide } from "./objects/HitboxUtil";
 import Modal from "./components/Modal";
@@ -27,6 +27,11 @@ function App() {
 
   function handleZoom(e) {
     setGlobalScale(e.globalScale);
+  }
+
+  function setZoom(e) {
+    canvasScreen.setGlobalScale(e.target.value);
+    setGlobalScale(e.target.value);
   }
 
   useEffect(() => {
@@ -296,6 +301,26 @@ function App() {
       <p className="z-[-99999] text-sm text-center text-yellow-400 select-none">
         Hold and drag to move the canvas camera
       </p>
+      <div className="absolute z-[99999] items-center w-full">
+        <div className="w-1/3 relative m-auto text-center">
+          <label
+            htmlFor="default-range"
+            className="block mt-2 text-sm font-medium text-gray-900 dark:text-white select-none"
+          >
+            Zoom
+          </label>
+          <input
+            id="default-range"
+            type="range"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+            min={0.2}
+            max={3}
+            value={globalScale}
+            step={0.05}
+            onChange={setZoom}
+          />
+        </div>
+      </div>
       <canvas
         id="my-canvas"
         className="z-[1] absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
