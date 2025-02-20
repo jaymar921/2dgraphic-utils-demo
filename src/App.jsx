@@ -7,7 +7,7 @@ import QMark from "./assets/qmark-icon.png";
 import ItemPlopSFX from "./assets/item_plop.mp3";
 import BarrelImage from "./assets/barrel.png";
 import CodeImage from "./assets/code.png";
-import { CanvasScreen, Sprite, SpriteType } from "./@jaymar921/2dgraphic-utils";
+import { CanvasScreen, Sprite, SpriteType } from "@jaymar921/2dgraphic-utils";
 import { Player } from "./objects/Player";
 import { IsCollide } from "./objects/HitboxUtil";
 import Modal from "./components/Modal";
