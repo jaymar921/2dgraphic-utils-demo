@@ -30,8 +30,28 @@ function App() {
   }
 
   function setZoom(e) {
-    canvasScreen.setGlobalScale(e.target.value);
-    setGlobalScale(e.target.value);
+    const zoomValue = parseFloat(e.target.value);
+    canvasScreen.setGlobalScale(zoomValue);
+    setGlobalScale(zoomValue);
+
+    const canvas = canvasScreen ?? new CanvasScreen();
+
+    const { width, height } = canvas.canvasElement;
+    const { x, y } = canvas.getCameraOffset();
+
+    const centerX =
+      (CanvasScreen.fixedCameraOffset.x +
+        (CanvasScreen.fixedCameraOffset.x + width)) /
+      2;
+    const centerY =
+      (CanvasScreen.fixedCameraOffset.y +
+        (CanvasScreen.fixedCameraOffset.y + height)) /
+      2;
+
+    const newX = centerX - (centerX - x) / (zoomValue / globalScale);
+    const newY = centerY - (centerY - y) / (zoomValue / globalScale);
+    canvas.setCameraOffset(newX, newY);
+    console.log(centerX, centerY);
   }
 
   useEffect(() => {
