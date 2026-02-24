@@ -51,12 +51,10 @@ function App() {
     const newX = centerX - (centerX - x) / (zoomValue / globalScale);
     const newY = centerY - (centerY - y) / (zoomValue / globalScale);
     canvas.setCameraOffset(newX, newY);
-    console.log(centerX, centerY);
   }
 
   useEffect(() => {
     if (canvasScreen) return;
-    // bind the CanvasScreen to the canvas element
     const w = window.innerWidth;
     const h = window.innerHeight;
     const screen = new CanvasScreen("my-canvas", w, h, "rgba(0,0,0,0)");
@@ -184,14 +182,10 @@ function App() {
     screen.registerObject(player);
 
     screen.handleScreenClickedEvent((e) => {
-      direction.x =
-        (e.mousePosition.x -
-          (player.width / 2) * player.scale * screen.globalScale) /
-        screen.globalScale;
-      direction.y =
-        (e.mousePosition.y -
-          (player.height / 2) * player.scale * screen.globalScale) /
-        screen.globalScale;
+      // FIX: mousePosition is now in world space — no scale correction needed.
+      // Just offset by half the player's world-space size to center the destination.
+      direction.x = e.mousePosition.x - (player.width / 2) * player.scale;
+      direction.y = e.mousePosition.y - (player.height / 2) * player.scale;
     });
 
     setCanvasScreen(screen);
@@ -200,11 +194,10 @@ function App() {
       while (true) {
         await sleep(20);
 
-        if (CanvasScreen.screenMoving) {
-          direction.x = player.posX;
-          direction.y = player.posY;
-          continue;
-        }
+        // FIX: removed CanvasScreen.screenMoving check (that property was never
+        // assigned and was always undefined). Drag-click suppression is now
+        // handled inside the library, so direction is never accidentally reset
+        // mid-drag from here.
 
         let velocityX = player.velocity;
         let velocityY = player.velocity;
@@ -219,6 +212,8 @@ function App() {
           )
             continue;
 
+          // FIX: IsCollide should receive world-space positions — pass cameraOffset
+          // so the collision utility can work in the same coordinate space as posX/posY.
           const cameraOffset = screen.getCameraOffset();
           const collision = IsCollide(player, obj, cameraOffset);
 
@@ -226,7 +221,6 @@ function App() {
           let collisionY = collision[2];
 
           if (collision[0]) {
-            // show pop up
             nearItem = obj;
             if (obj.type === SpriteType.OBJECT) {
               if (collisionX) {
@@ -242,19 +236,10 @@ function App() {
           }
         }
 
-        // move player based on updated direction
-        if (player.posX < direction.x) {
-          player.posX += velocityX;
-        }
-        if (player.posX > direction.x) {
-          player.posX -= velocityX;
-        }
-        if (player.posY > direction.y) {
-          player.posY -= velocityY;
-        }
-        if (player.posY < direction.y) {
-          player.posY += velocityY;
-        }
+        if (player.posX < direction.x) player.posX += velocityX;
+        if (player.posX > direction.x) player.posX -= velocityX;
+        if (player.posY > direction.y) player.posY -= velocityY;
+        if (player.posY < direction.y) player.posY += velocityY;
 
         if (collided) {
           direction.x = player.posX;
