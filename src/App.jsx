@@ -60,6 +60,9 @@ function App() {
     const screen = new CanvasScreen("my-canvas", w, h, "rgba(0,0,0,0)");
     screen.enableScreenDrag(true);
     screen.enableScreenZoom(true);
+    screen.setYsort(true);
+    screen.setBehindOpacity(0.1);
+    screen.setOverlapThreshold(0.4);
 
     screen.handleScreenZoomEvent(handleZoom);
 
@@ -170,6 +173,16 @@ function App() {
       type: SpriteType.OBJECT,
     });
 
+    const barrel1 = new Sprite({
+      objID: "b-1",
+      name: "Barrel",
+      posX: direction.x - 220,
+      posY: direction.y - 120,
+      imageSource: BarrelImage,
+      scale: 0.05,
+      type: SpriteType.OBJECT,
+    });
+
     screen.registerObject(bootsItem);
     screen.registerObject(bootsItem1);
     screen.registerObject(bootsItem2);
@@ -180,6 +193,7 @@ function App() {
     screen.registerObject(code);
     screen.registerObject(barrel);
     screen.registerObject(player);
+    screen.registerObject(barrel1);
 
     screen.handleScreenClickedEvent((e) => {
       // FIX: mousePosition is now in world space — no scale correction needed.
